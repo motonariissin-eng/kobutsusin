@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)file:///C:/Users/hidet/Downloads/kobutsu-dacho_17_3.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>古物台帳</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222535;
+    --border: #2e3248;
+    --accent: #e8a020;
+    --accent2: #f0c060;
+    --text: #e8eaf0;
+    --muted: #6b7080;
+    --danger: #e05050;
+    --success: #40c080;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: var(--bg); color: var(--text); font-family: -apple-system,'Helvetica Neue',sans-serif; font-size: 15px; min-height: 100vh; padding-bottom: 80px; }
+  header { background: var(--surface); border-bottom: 2px solid var(--accent); padding: 14px 16px; position: sticky; top: 0; z-index: 100; }
+  .logo { font-size: 17px; font-weight: 700; color: var(--accent); }
+  .subtitle { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .bottom-tab { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; z-index: 100; }
+  .tab-btn { flex: 1; padding: 10px 4px 14px; border: none; background: none; color: var(--muted); font-size: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .tab-btn .icon { font-size: 22px; }
+  .tab-btn.active { color: var(--accent); }
+  .panel { display: none; padding: 16px; }
+  .panel.active { display: block; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+  .card-title { font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 5px; font-weight: 600; }
+  .req { color: var(--danger); }
+  .form-group input, .form-group select, .form-group textarea { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 15px; padding: 10px 12px; font-family: inherit; -webkit-appearance: none; appearance: none; }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
+  .form-group textarea { min-height: 80px; resize: vertical; }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7080' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+  .btn { display: inline-block; padding: 12px 20px; border-radius: 8px; border: none; font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; text-align: center; }
+  .btn-primary { background: var(--accent); color: #111; width: 100%; }
+  .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--accent); }
+  .btn-danger  { background: transparent; color: var(--danger); border: 1px solid var(--danger); font-size: 12px; padding: 6px 12px; }
+  .btn-sm { font-size: 13px; padding: 8px 14px; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .alert { padding: 12px 14px; border-radius: 8px; font-size: 12px; line-height: 1.7; margin-bottom: 14px; }
+  .alert-warn { background: rgba(232,160,32,.1); border: 1px solid rgba(232,160,32,.3); color: var(--accent2); }
+  .alert-info { background: rgba(80,160,240,.08); border: 1px solid rgba(80,160,240,.2); color: #90b8e0; }
+  .entry-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+  .entry-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+  .entry-no { font-size: 11px; color: var(--muted); }
+  .badge { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
+  .badge-in  { background: rgba(64,192,128,.15); color: var(--success); }
+  .badge-out { background: rgba(200,100,100,.15); color: #e08080; }
+  .entry-category { font-size: 13px; color: var(--accent2); font-weight: 600; margin-bottom: 4px; }
+  .entry-feature  { font-size: 13px; line-height: 1.5; margin-bottom: 6px; }
+  .entry-meta { font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .entry-price { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .empty { text-align: center; color: var(--muted); padding: 48px 16px; font-size: 14px; }
+  .search-bar { margin-bottom: 12px; }
+  .search-bar input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; padding: 10px 12px; }
+  .count { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .partner-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; min-height: 32px; }
+  .partner-btn { padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface2); color: var(--text); font-size: 13px; cursor: pointer; font-family: inherit; }
+  .partner-btn.active { border-color: var(--accent); color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { background: var(--surface2); color: var(--muted); padding: 8px 10px; text-align: left; font-size: 11px; }
+  td { padding: 10px; border-bottom: 1px solid var(--border); line-height: 1.5; vertical-align: top; }
+  @media print {
+    .bottom-tab,.btn,.search-bar { display: none !important; }
+    body { background: white; color: black; padding: 0; }
+    .entry-card { border: 1px solid #ccc; break-inside: avoid; }
+    .entry-meta,.entry-no { color: #666 !important; }
+    .badge-in  { background: #d4f0e0 !important; color: #206040 !important; }
+    .badge-out { background: #fdd !important; color: #803030 !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">⚙ 古物台帳</div>
+  <div class="subtitle">バイク・部品専用 / 古物営業法第16条対応</div>
+</header>
+
+<!-- 新規登録 -->
+<div id="tab-entry" class="panel active">
+  <div class="alert alert-warn">⚠ バイク・部品は<strong>金額にかかわらず台帳記載必須</strong>（古物営業法施行規則第16条）</div>
+
+  <div class="card">
+    <div class="card-title">台帳記入</div>
+    <div class="form-group">
+      <label>年月日 <span class="req">*</span></label>
+      <input type="date" id="f_date">
+    </div>
+    <div class="form-group">
+      <label>区分 <span class="req">*</span></label>
+      <select id="f_kubun">
+        <option value="受入（買受）">受入（買受）</option>
+        <option value="受入（委託）">受入（委託）</option>
+        <option value="払出（売却）">払出（売却）</option>
+        <option value="払出（返還）">払出（返還）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>品目 <span class="req">*</span></label>
+      <select id="f_category">
+        <option value="自動二輪車">自動二輪車（バイク本体）</option>
+        <option value="原動機付自転車">原動機付自転車（原付本体）</option>
+        <option value="バイク部品（エンジン系）">バイク部品（エンジン系）</option>
+        <option value="バイク部品（外装系）">バイク部品（外装系）</option>
+        <option value="バイク部品（電装系）">バイク部品（電装系）</option>
+        <option value="バイク部品（足回り系）">バイク部品（足回り系）</option>
+        <option value="バイク部品（その他）">バイク部品（その他）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>数量</label>
+      <input type="number" id="f_qty" value="1" min="1">
+    </div>
+    <div class="form-group">
+      <label>特徴 <span class="req">*</span>（メーカー・型番・色・車体番号・状態など）</label>
+      <textarea id="f_feature" placeholder="例：ホンダ CB400SF NC42 黒
+車体番号 NC42-XXXXXXX
+外装に小傷あり、エンジン始動確認済"></textarea>
+    </div>
+    <div class="form-group">
+      <label>取引金額（円）</label>
+      <input type="number" id="f_price" placeholder="0">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">取引相手</div>
+    <div id="partnerList" class="partner-list"><button class="partner-btn" onclick="applyPartner(&#39;株式会社　モトレボ　渡部伸正&#39;)">株式会社　モトレボ　渡部伸正</button><button class="partner-btn" onclick="applyPartner(&#39;A\&#39;s  Wing   河合　善昭&#39;)">A's  Wing   河合　善昭</button><button class="partner-btn" onclick="applyPartner(&#39;山崎　紅梅&#39;)">山崎　紅梅</button><button class="partner-btn" onclick="applyPartner(&#39;有限会社　川田商事&#39;)">有限会社　川田商事</button></div>
+    <div class="btn-row" style="margin-bottom:14px">
+      <button class="btn btn-outline btn-sm" onclick="savePartner()">⭐ この業者を登録</button>
+      <button class="btn btn-danger" id="deletePartnerBtn" style="display:none" onclick="deleteCurrentPartner()">削除</button>
+    </div>
+    <div class="form-group">
+      <label>氏名・会社名 <span class="req">*</span></label>
+      <input type="text" id="f_name" placeholder="山田 太郎 / 株式会社〇〇">
+    </div>
+    <div class="form-group">
+      <label>年齢</label>
+      <input type="number" id="f_age" placeholder="35">
+    </div>
+    <div class="form-group">
+      <label>住所</label>
+      <input type="text" id="f_address" placeholder="東京都〇〇区…">
+    </div>
+    <div class="form-group">
+      <label>職業</label>
+      <input type="text" id="f_job" placeholder="古物商・会社員など">
+    </div>
+    <div class="form-group">
+      <label>本人確認方法 <span class="req">*</span></label>
+      <select id="f_id_method">
+        <option value="運転免許証">運転免許証</option>
+        <option value="マイナンバーカード">マイナンバーカード</option>
+        <option value="旅券（パスポート）">旅券（パスポート）</option>
+        <option value="在留カード">在留カード</option>
+        <option value="健康保険証">健康保険証</option>
+        <option value="古物商同士の取引">古物商同士の取引</option>
+        <option value="その他">その他</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>確認番号（免許番号など）</label>
+      <input type="text" id="f_id_no" placeholder="XX-XXXXXXXX-XX">
+    </div>
+    <div class="form-group">
+      <label>備考</label>
+      <input type="text" id="f_memo" placeholder="領収書あり、写真撮影済など">
+    </div>
+    <button class="btn btn-primary" onclick="saveEntry()">✅ 台帳に記録する</button>
+  </div>
+</div>
+
+<!-- 台帳一覧 -->
+<div id="tab-list" class="panel">
+  <div class="search-bar">
+    <input type="text" id="filterText" placeholder="🔍 品目・特徴・氏名で検索" oninput="renderList()">
+  </div>
+  <div class="count" id="countBadge">0件</div>
+  <div id="listContainer"></div>
+  <div id="emptyState" class="empty" style="display:none">まだ記録がありません</div>
+  <div class="btn-row">
+    <button class="btn btn-outline btn-sm" onclick="syncFromGAS()">☁ 同期</button>
+    <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ CSV</button>
+    <button class="btn btn-outline btn-sm" onclick="window.print()">🖨 印刷</button>
+    <button class="btn btn-danger" onclick="clearAllEntries()">🗑 全削除</button>
+  </div>
+  <div id="syncStatus" style="font-size:12px;color:var(--muted);margin-top:10px"></div>
+  <div class="alert alert-info" style="margin-top:14px;font-size:11px">
+    ☁ Googleスプレッドシートに自動保存されます。別のデバイスで使う場合は「同期」ボタンを押してください。定期的にCSVもバックアップしてください（3年間保存義務）。
+  </div>
+</div>
+
+<!-- 記載要件 -->
+<div id="tab-guide" class="panel">
+  <div class="card">
+    <div class="card-title">記載が必要なタイミング</div>
+    <div class="alert alert-warn">バイク・部品は<strong>金額にかかわらず必須</strong><br>出典：古物営業法施行規則第16条</div>
+    <table>
+      <tbody><tr><th>品目</th><th>要否</th></tr>
+      <tr><td>バイク本体・原付</td><td>✅ 必須</td></tr>
+      <tr><td>バイク部品（エンジン・外装等）</td><td>✅ 必須</td></tr>
+      <tr><td>ボルト・ナット・配線類</td><td>❌ 免除</td></tr>
+    </tbody></table>
+  </div>
+  <div class="card">
+    <div class="card-title">必須記載項目</div>
+    <table>
+      <tbody><tr><td>① 年月日</td><td>取引した日付</td></tr>
+      <tr><td>② 区分</td><td>買受／委託／売却／返還</td></tr>
+      <tr><td>③ 品目・数量</td><td>1品ごとに記載</td></tr>
+      <tr><td>④ 特徴</td><td>メーカー・型番・色・車体番号など</td></tr>
+      <tr><td>⑤ 相手方</td><td>氏名・住所・年齢・職業</td></tr>
+      <tr><td>⑥ 本人確認</td><td>確認方法と番号</td></tr>
+    </tbody></table>
+  </div>
+  <div class="card">
+    <div class="card-title">保存義務</div>
+    <table>
+      <tbody><tr><td>保存期間</td><td>最終記載日から<strong>3年間</strong></td></tr>
+      <tr><td>根拠</td><td>古物営業法第18条</td></tr>
+      <tr><td>罰則</td><td>記載漏れ：6ヶ月以下の懲役または30万円以下の罰金</td></tr>
+    </tbody></table>
+  </div>
+</div>
+
+<!-- ボトムタブ -->
+<div class="bottom-tab">
+  <button class="tab-btn active" id="tbtn-entry" onclick="switchTab(&#39;entry&#39;)">
+    <span class="icon">✏️</span>新規登録
+  </button>
+  <button class="tab-btn" id="tbtn-list" onclick="switchTab(&#39;list&#39;)">
+    <span class="icon">📋</span>台帳一覧
+  </button>
+  <button class="tab-btn" id="tbtn-guide" onclick="switchTab(&#39;guide&#39;)">
+    <span class="icon">📖</span>記載要件
+  </button>
+</div>
+
+<script>
+function todayJST() {
+  const d = new Date();
+  const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+  return jst.toISOString().slice(0, 10);
+}
+
+const GAS_URL     = 'https://script.google.com/macros/s/AKfycbxbNyi75rLF135wJ2rJdwbumlQMiRXMtGJttXqDXyCffH5xxQtcu7SAWN86psBUjkcR/exec';
+const LS_KEY      = 'kobutsu_entries_v1';
+const LS_ID       = 'kobutsu_nextId_v1';
+const LS_PARTNERS = 'kobutsu_partners_v1';
+
+let entries = [], nextId = 1, partners = [], activePartner = null;
+
+function loadAll() {
+  try { entries  = JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch(e) { entries = []; }
+  try { nextId   = parseInt(localStorage.getItem(LS_ID) || '1', 10); } catch(e) { nextId = 1; }
+  try { partners = JSON.parse(localStorage.getItem(LS_PARTNERS) || '[]'); } catch(e) { partners = []; }
+}
+function saveEntries() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify(entries));
+    localStorage.setItem(LS_ID, String(nextId));
+  } catch(e) {
+    alert('⚠ 端末への保存に失敗しました（プライベートブラウズ、またはストレージ不足の可能性）');
+  }
+}
+function savePartners() {
+  try { localStorage.setItem(LS_PARTNERS, JSON.stringify(partners)); } catch(e) {}
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('tbtn-'+name).classList.add('active');
+  if (name === 'list') renderList();
+}
+
+function renderPartnerButtons() {
+  const wrap = document.getElementById('partnerList');
+  if (!partners.length) { wrap.innerHTML = '<span style="font-size:12px;color:var(--muted)">登録済み業者なし</span>'; return; }
+  wrap.innerHTML = partners.map(p =>
+    '<button class="partner-btn'+(activePartner===p.name?' active':'')+'" onclick="applyPartner(\''+p.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'\')">' + p.name + '</button>'
+  ).join('');
+}
+
+function applyPartner(name) {
+  const p = partners.find(x => x.name === name);
+  if (!p) return;
+  document.getElementById('f_name').value      = p.name    || '';
+  document.getElementById('f_age').value       = p.age     || '';
+  document.getElementById('f_address').value   = p.address || '';
+  document.getElementById('f_job').value       = p.job     || '';
+  document.getElementById('f_id_method').value = p.idMethod|| '運転免許証';
+  document.getElementById('f_id_no').value     = p.idNo    || '';
+  activePartner = name;
+  document.getElementById('deletePartnerBtn').style.display = 'inline-block';
+  renderPartnerButtons();
+}
+
+function savePartner() {
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { alert('先に氏名・会社名を入力してください'); return; }
+  const p = { name, age: document.getElementById('f_age').value, address: document.getElementById('f_address').value.trim(), job: document.getElementById('f_job').value.trim(), idMethod: document.getElementById('f_id_method').value, idNo: document.getElementById('f_id_no').value.trim() };
+  const idx = partners.findIndex(x => x.name === name);
+  if (idx >= 0) { if (!confirm('「'+name+'」を上書きしますか？')) return; partners[idx] = p; } else partners.push(p);
+  savePartners(); activePartner = name;
+  document.getElementById('deletePartnerBtn').style.display = 'inline-block';
+  renderPartnerButtons(); alert('「'+name+'」を登録しました');
+}
+
+function deleteCurrentPartner() {
+  if (!activePartner) return;
+  if (!confirm('「'+activePartner+'」を削除しますか？')) return;
+  partners = partners.filter(p => p.name !== activePartner);
+  savePartners(); activePartner = null;
+  document.getElementById('deletePartnerBtn').style.display = 'none';
+  renderPartnerButtons();
+}
+
+function saveEntry() {
+  const date    = document.getElementById('f_date').value;
+  const feature = document.getElementById('f_feature').value.trim();
+  const name    = document.getElementById('f_name').value.trim();
+  const kubun   = document.getElementById('f_kubun').value;
+  if (!date)    { alert('年月日を入力してください'); return; }
+  if (!feature) { alert('特徴を入力してください'); return; }
+  if (!name) { alert('取引相手の氏名を入力してください'); return; }
+  const entry = { id: nextId++, date, kubun, category: document.getElementById('f_category').value, qty: document.getElementById('f_qty').value, feature, price: document.getElementById('f_price').value, idMethod: document.getElementById('f_id_method').value, idNo: document.getElementById('f_id_no').value.trim(), name, age: document.getElementById('f_age').value, address: document.getElementById('f_address').value.trim(), job: document.getElementById('f_job').value.trim(), memo: document.getElementById('f_memo').value.trim(), createdAt: new Date().toLocaleString('ja-JP') };
+  entries.push(entry); saveEntries();
+  setSyncStatus('☁ 保存中…', 'var(--accent)');
+  gasPost({action:'save', ...entry}).then(r => setSyncStatus(r&&r.ok ? '✅ クラウド保存済 '+new Date().toLocaleTimeString('ja-JP') : '⚠ クラウド保存失敗（端末には保存済）', r&&r.ok?'var(--success)':'var(--danger)')).catch(()=> setSyncStatus('⚠ クラウド保存失敗（端末には保存済）','var(--danger)'));
+  clearForm(); switchTab('list'); alert('✅ No.'+entry.id+' を記録しました');
+}
+
+function clearForm() {
+  ['f_feature','f_price','f_id_no','f_name','f_age','f_address','f_job','f_memo'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('f_qty').value = '1';
+  document.getElementById('f_date').value = todayJST();
+  document.getElementById('f_kubun').value = '受入（買受）';
+  document.getElementById('f_category').value = '自動二輪車';
+  document.getElementById('f_id_method').value = '運転免許証';
+  activePartner = null;
+  document.getElementById('deletePartnerBtn').style.display = 'none';
+  renderPartnerButtons();
+}
+
+function renderList() {
+  const q = (document.getElementById('filterText').value || '').toLowerCase();
+  const filtered = entries.filter(e => !q || (e.category+e.feature+e.name+e.address).toLowerCase().includes(q)).slice().reverse();
+  document.getElementById('countBadge').textContent = filtered.length+'件';
+  const container = document.getElementById('listContainer');
+  const empty     = document.getElementById('emptyState');
+  if (!filtered.length) { container.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  container.innerHTML = filtered.map(e => {
+    const isIn  = e.kubun.startsWith('受入');
+    const badge = isIn ? '<span class="badge badge-in">受入</span>' : '<span class="badge badge-out">払出</span>';
+    const price = e.price ? Number(e.price).toLocaleString()+'円' : '—';
+    return '<div class="entry-card"><div class="entry-header"><span class="entry-no">No.'+String(e.id).padStart(4,'0')+' · '+e.date+'</span>'+badge+'</div><div class="entry-category">'+esc(e.category)+' × '+e.qty+'</div><div class="entry-feature">'+esc(e.feature)+'</div><div class="entry-price">'+price+'</div><div class="entry-meta">👤 '+esc(e.name)+'　'+esc(e.address)+'<br>🪪 '+esc(e.idMethod)+' '+esc(e.idNo)+(e.memo?'<br>📝 '+esc(e.memo):'')+'</div><div style="margin-top:10px"><button class="btn btn-danger" onclick="deleteEntry('+e.id+')">削除</button></div></div>';
+  }).join('');
+}
+
+function deleteEntry(id) {
+  if (!confirm('No.'+id+' を削除しますか？')) return;
+  entries = entries.filter(e => e.id !== id); saveEntries(); renderList();
+  gasPost({action:'delete', id}).catch(()=>{});
+}
+
+function clearAllEntries() {
+  if (!entries.length) { alert('データがありません'); return; }
+  if (!confirm('全'+entries.length+'件を削除しますか？\nCSV出力済みですか？')) return;
+  entries = []; nextId = 1; saveEntries(); renderList();
+}
+
+function esc(str) { return String(str==null?'':str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function setSyncStatus(msg, color) { const el = document.getElementById('syncStatus'); if (el) { el.textContent = msg; el.style.color = color||'var(--muted)'; } }
+
+async function gasPost(payload) {
+  const res = await fetch(GAS_URL, { method:'POST', body: JSON.stringify(payload) });
+  return res.json();
+}
+
+async function syncFromGAS() {
+  setSyncStatus('☁ 同期中…', 'var(--accent)');
+  return new Promise((resolve) => {
+    const cbName = 'gasCallback_' + Date.now();
+    const script = document.createElement('script');
+    window[cbName] = function(data) {
+      delete window[cbName];
+      script.remove();
+      try {
+        if (!Array.isArray(data.entries)) throw new Error('entries missing');
+        entries = data.entries.map(e => ({...e, id: Number(e.id)}));
+        nextId = entries.length ? Math.max(...entries.map(e => e.id)) + 1 : 1;
+        saveEntries();
+        renderList();
+        setSyncStatus('✅ ' + entries.length + '件 同期完了 ' + new Date().toLocaleTimeString('ja-JP'), 'var(--success)');
+      } catch(e) {
+        setSyncStatus('⚠ 同期失敗: ' + e.message, 'var(--danger)');
+      }
+      resolve();
+    };
+    script.onerror = function() {
+      delete window[cbName];
+      script.remove();
+      setSyncStatus('⚠ 同期失敗: ネットワークエラー', 'var(--danger)');
+      resolve();
+    };
+    script.src = GAS_URL + '?callback=' + cbName;
+    document.head.appendChild(script);
+  });
+}
+
+function exportCSV() {
+  if (!entries.length) { alert('データがありません'); return; }
+  const h = ['No','年月日','区分','品目','数量','特徴','金額','確認方法','確認番号','氏名','年齢','住所','職業','備考','登録日時'];
+  const rows = entries.map(e => [e.id,e.date,e.kubun,e.category,e.qty,e.feature,e.price,e.idMethod,e.idNo,e.name,e.age,e.address,e.job,e.memo,e.createdAt].map(v=>'\"'+String(v||'').replace(/\"/g,'\"\"')+'\"').join(','));
+  const csv  = '\uFEFF' + [h.join(','),...rows].join('\r\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a'); a.href=url; a.download='古物台帳_'+new Date().toISOString().slice(0,10)+'.csv'; a.click(); URL.revokeObjectURL(url);
+}
+
+loadAll();
+document.getElementById('f_date').value = todayJST();
+renderPartnerButtons();
+</script>
+
+
+</body></html>
