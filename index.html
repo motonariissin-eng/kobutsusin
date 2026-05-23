@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0056)file:///C:/Users/hidet/Downloads/kobutsu-dacho_17_3.html -->
+<!-- saved from url=(0045)file:///C:/Users/hidet/Downloads/index_1.html -->
 <html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -398,7 +398,15 @@ async function syncFromGAS() {
       script.remove();
       try {
         if (!Array.isArray(data.entries)) throw new Error('entries missing');
-        entries = data.entries.map(e => ({...e, id: Number(e.id)}));
+        entries = data.entries.map(e => {
+          let date = e.date || '';
+          if (date && date.length > 10) {
+            const d = new Date(date);
+            const jst = new Date(d.getTime() + 9 * 60 * 60 * 1000);
+            date = jst.toISOString().slice(0, 10);
+          }
+          return {...e, id: Number(e.id), date};
+        });
         nextId = entries.length ? Math.max(...entries.map(e => e.id)) + 1 : 1;
         saveEntries();
         renderList();
